@@ -115,33 +115,19 @@
   .pay-option-bank:has(input:checked) { border: 1px solid #00b74a; border-radius: 10px; background: #f3fbf6; }
   .pay-option-bank:has(input:checked) > .pay-opt { border-color: transparent; background: none; }
   .pay-opts.xt-error .pay-option-bank:has(input:checked) { border-color: red; }
-  .pay-opts .pay-sum { display: none; margin: 0 12px 12px; padding: 14px; border: 1px solid #e1e8e3; border-radius: 8px; background: #fff; font-family: IRANSans-FaNum, sans-serif; font-size: 12px; min-width: 0; }
+  .pay-opts .pay-sum { display: none; position: relative; margin: 16px 12px 12px; padding: 22px 14px 14px; border: 1px solid #d5d9dd; border-radius: 8px; background: #fff; font-family: IRANSans-FaNum, sans-serif; font-size: 12px; min-width: 0; }
   .pay-option-bank:has(input:checked) .pay-sum.filled { display: block; }
-  .pay-option-bank:has(.pay-sum.filled) .pay-txt small { display: none; }
   .pay-sum-hd { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid #edf0ee; }
   .pay-sum-hd b { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: #268344; }
   .receipt-check { display: grid; place-items: center; width: 19px; height: 19px; border-radius: 50%; background: #eaf7ee; flex: none; }
-  .pay-sum .pay-edit { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 36px; padding: 0 9px; border: 1px solid #e1e4e8; border-radius: 6px; background: #fff; color: #535c66; font: inherit; font-size: 12px; cursor: pointer; flex: none; }
-  .pay-sum .pay-edit:hover { background: #f5f6f7; }
+  .pay-sum .pay-edit { position: absolute; top: 0; left: 14px; transform: translateY(-50%); display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; box-sizing: border-box; border: 1px solid #d5d9dd; border-radius: 5px; background: #fff; box-shadow: 0 0 0 9px #fff; color: #ffa900; cursor: pointer; }
+  .pay-edit svg { width: 21px; height: 21px; }
+  .pay-sum .pay-edit:hover { background: #fff8e6; }
   .pay-sum-row { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: baseline; padding-top: 10px; line-height: 1.8; }
   .pay-sum-row span { color: #828992; }
   .pay-sum-row b { min-width: 0; text-align: left; font-size: 12px; font-weight: 500; color: #303840; overflow-wrap: anywhere; }
   .pay-sum-row .s-code, .pay-sum-row .s-date { direction: ltr; unicode-bidi: isolate; }
-  .pay-sum .receipt-file { display: flex; align-items: center; gap: 10px; width: 100%; min-width: 0; margin-top: 12px; padding: 8px; box-sizing: border-box; border: 1px solid #e8ebee; border-radius: 7px; background: #fafbfc; text-align: right; font: inherit; cursor: pointer; }
-  .pay-sum .receipt-file[hidden] { display: none; }
-  .receipt-file img { width: 42px; height: 48px; object-fit: cover; object-position: top; border: 1px solid #e5e7eb; border-radius: 4px; background: #fff; flex: none; }
-  .receipt-file-copy { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-  .receipt-file-copy b { color: #3b454f; font-size: 12px; font-weight: 500; }
-  .receipt-file-name { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #8b929a; font-size: 10px; direction: ltr; text-align: right; }
-  .receipt-file-action { color: #268344; font-size: 11px; flex: none; }
-  .pay-sum-note { margin: 12px 0 0; padding-top: 10px; border-top: 1px solid #edf0ee; color: #8b929a; font-size: 10px; line-height: 1.9; }
-  .receipt-view { width: calc(100vw - 32px); max-width: 560px; max-height: calc(100dvh - 32px); padding: 12px; box-sizing: border-box; border: 1px solid #e1e4e8; border-radius: 12px; font-family: IRANSans-FaNum, sans-serif; }
-  .receipt-view::backdrop { background: rgba(16, 24, 48, .55); }
-  .receipt-view-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-  .receipt-view-head b { font-size: 13px; font-weight: 500; }
-  .receipt-view-close { min-height: 40px; padding: 0 12px; border: 1px solid #e1e4e8; border-radius: 6px; background: #fff; font: inherit; font-size: 12px; cursor: pointer; }
-  .receipt-view-image { display: block; width: 100%; height: auto; }
-  .pay-edit:focus-visible, .receipt-file:focus-visible, .receipt-view-close:focus-visible { outline: 2px solid #00b74a; outline-offset: 3px; }
+  .pay-edit:focus-visible { outline: 2px solid #ffa900; outline-offset: 3px; }
   .pay-opts:not(:has(input[value=online]:checked)) + .online-msg { display: none; }
   .wp-pay-orders .vital-msg.cheque-btn { margin: 24px 0; } .wp-pay-orders .sep-section:has(.pay-opts) { margin-bottom: 0; }
 </style>
@@ -152,12 +138,10 @@
 <div class="pay-option-bank">
 <label class="pay-opt"><input type="radio" name="pay" value="account"><span class="pay-txt"><b>واریز به حساب</b><small>واریز مستقیم به شماره حساب شرکت</small></span><i class="ph ph-credit-card pay-ico" aria-hidden="true"></i></label>
 <section class="pay-sum" aria-label="اطلاعات واریز ثبت‌شده">
-<div class="pay-sum-hd"><b><span class="receipt-check" aria-hidden="true">✓</span>اطلاعات واریز ثبت شد</b><button type="button" class="pay-edit">ویرایش</button></div>
+<div class="pay-sum-hd"><b><span class="receipt-check" aria-hidden="true">✓</span>اطلاعات واریز ثبت شد</b><button type="button" class="pay-edit" aria-label="ویرایش اطلاعات واریز" title="ویرایش اطلاعات واریز"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 5 5 5M4 20h16M5 15l-1 4 4-1L20 6a2.1 2.1 0 0 0-3-3Z"/></svg></button></div>
 <div class="pay-sum-row"><span>بانک مقصد</span><b>سینا</b></div>
 <div class="pay-sum-row"><span>تاریخ واریز</span><b class="s-date"></b></div>
 <div class="pay-sum-row"><span>کد پیگیری</span><b class="s-code"></b></div>
-<button type="button" class="receipt-file" hidden aria-label="مشاهده تصویر رسید"><img class="receipt-thumb" alt=""><span class="receipt-file-copy"><b>تصویر رسید</b><span class="receipt-file-name"></span></span><span class="receipt-file-action">مشاهده</span></button>
-<p class="pay-sum-note">پس از تکمیل سفارش، پرداخت شما بررسی می‌شود.</p>
 </section></div>
 </div><div class="vital-msg green-msg online-msg">خریدار گرامی، سفارش‌هایی که پرداخت آن‌ها به‌صورت آنلاین انجام شود، مستقیماً و بدون نیاز به تأیید حسابداری به واحد تحویل ارسال می‌شوند.</div></div><div class="vital-msg default-msg cheque-btn"><i class="back_change_ico add_green_full_ico"></i><label>افزودن آدرس تحویل</label></div><div class="change-box"><span>نیاز به تغییر سفارش خود دارید؟</span><button class="shoping-btn change-order-btn new-waiting-btn larg-btn waiting-button silver-button" type="button"><span class="spin-holder"><i class="nc-icon nc-shop-reload"></i></span> تغییر سفارش </button></div><div class="mini-foot"><a class="seal" href="javascript:void(0)" title="نماد اعتماد" aria-label="نماد اعتماد"><img src="https://niksms.com/Frontend/dist/app_shop/assets/images/enamad-img.svg" alt=""><span>خرید امن با نماد اعتماد</span></a><a href="https://niksms.com" aria-label="NIKSMS"><img class="logo" src="https://niksms.com/Frontend/dist/app_shop/assets/images/LOGO-NIKSMS.svg" alt="NIKSMS"></a><p class="copy">© تهیه شده توسط <b>نیک‌اس‌ام‌اس</b></p></div></div></div>
 
@@ -173,7 +157,6 @@
   </div>
 <dialog class="err-dlg" role="alertdialog" aria-labelledby="err-t" aria-describedby="err-d"><div class="hd"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M12 6.8v6.4" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1.3" fill="#fff"/></svg><b id="err-t">خطا</b></div><p id="err-d">لطفاً موارد با <span class="r">حاشیه قرمز</span> را <span class="g">تکمیل یا اصلاح</span> کنید.</p><button type="button" class="ok">تایید</button></dialog>
 <dialog class="err-dlg warn" role="alertdialog" aria-labelledby="warn-t" aria-describedby="warn-d"><div class="hd"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M12 6.8v6.4" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1.3" fill="#fff"/></svg><b id="warn-t">هشدار</b></div><p id="warn-d">برای دریافت پیش‌فاکتور، لطفاً <span class="r">نام و نام خانوادگی</span> را <span class="g">وارد کنید</span>.</p><button type="button" class="ok">تایید</button></dialog>
-<dialog class="receipt-view" aria-labelledby="receipt-view-title"><div class="receipt-view-head"><b id="receipt-view-title">تصویر رسید واریز</b><button type="button" class="receipt-view-close">بستن</button></div><img class="receipt-view-image" alt="تصویر رسید انتخاب‌شده"></dialog>
 <dialog class="pay-modal" aria-label="اطلاعات حساب"><div class="nik-shared-manual-payment-modal wp-product-payment menu-modal"><div class="modal-dialog"><div class="modal-content"><div class="shared-manual-payment smart-form menu-fixed-design">
 <div class="box-header flx-head"><label class="label">اطلاعات حساب</label><button type="button" class="back-btn">بازگشت<i class="ph ph-caret-left" aria-hidden="true"></i></button></div>
 <div class="menu-fixed-body"><div class="content">
@@ -227,12 +210,6 @@
   [year, year - 1].forEach(y => ySel.add(new Option(fa(y), y)));
   "فروردین اردیبهشت خرداد تیر مرداد شهریور مهر آبان آذر دی بهمن اسفند".split(" ").forEach((m, i) => mSel.add(new Option(m, i + 1)));
   for (let d = 1; d <= 31; d++) dSel.add(new Option(fa(d), d));
-  let receiptUrl = null;
-  const receiptFile = sum.querySelector(".receipt-file"), receiptView = document.querySelector(".receipt-view");
-  receiptFile.onclick = () => receiptView.showModal();
-  receiptView.querySelector(".receipt-view-close").onclick = () => receiptView.close();
-  receiptView.onclick = e => { if (e.target === receiptView) receiptView.close(); };
-  window.addEventListener("pagehide", () => { if (receiptUrl) URL.revokeObjectURL(receiptUrl); });
   let saved = false;
   bank.addEventListener("change", () => saved || pm.showModal());
   sum.querySelector(".pay-edit").onclick = e => { e.preventDefault(); pm.showModal(); };
@@ -255,15 +232,6 @@
       ? new Date().toLocaleDateString("fa-IR", { year: "numeric", month: "2-digit", day: "2-digit" })
       : `${fa(ySel.value)}/${fa(mSel.value, 2)}/${fa(dSel.value, 2)}`;
     sum.querySelector(".s-code").textContent = code.value.trim();
-    const receipt = fileIn.files[0];
-    if (receiptUrl) URL.revokeObjectURL(receiptUrl);
-    receiptUrl = receipt ? URL.createObjectURL(receipt) : null;
-    receiptFile.hidden = !receipt;
-    if (receipt) {
-      sum.querySelector(".receipt-thumb").src = receiptUrl;
-      receiptView.querySelector(".receipt-view-image").src = receiptUrl;
-      sum.querySelector(".receipt-file-name").textContent = receipt.name;
-    }
     sum.classList.add("filled"); saved = true; payBox.classList.remove("xt-error");
     pm.close();
   };
