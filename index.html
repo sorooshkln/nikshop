@@ -115,13 +115,13 @@
   .pay-option-bank:has(input:checked) { border: 1px solid #00b74a; border-radius: 10px; background: #f3fbf6; }
   .pay-option-bank:has(input:checked) > .pay-opt { border-color: transparent; background: none; }
   .pay-opts.xt-error .pay-option-bank:has(input:checked) { border-color: red; }
-  .pay-opts .pay-sum { display: none; position: relative; margin: 16px 12px 12px; padding: 22px 14px 14px; border: 1px solid #d5d9dd; border-radius: 8px; background: #fff; font-family: IRANSans-FaNum, sans-serif; font-size: 12px; min-width: 0; }
+  .pay-opts .pay-sum { display: none; margin: 0 12px 12px; padding: 14px; border: 1px solid #d5d9dd; border-radius: 8px; background: #fff; font-family: IRANSans-FaNum, sans-serif; font-size: 12px; min-width: 0; }
   .pay-option-bank:has(input:checked) .pay-sum.filled { display: block; }
-  .pay-sum-hd { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid #edf0ee; }
+  .pay-sum-hd { display: flex; align-items: center; justify-content: flex-start; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid #edf0ee; }
   .pay-sum-hd b { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: #268344; }
   .receipt-check { display: grid; place-items: center; width: 19px; height: 19px; border-radius: 50%; background: #eaf7ee; flex: none; }
-  .pay-sum .pay-edit { position: absolute; top: 0; left: 14px; transform: translateY(-50%); display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; box-sizing: border-box; border: 1px solid #d5d9dd; border-radius: 5px; background: #fff; box-shadow: 0 0 0 9px #fff; color: #ffa900; cursor: pointer; }
-  .pay-edit svg { width: 21px; height: 21px; }
+  .pay-sum .pay-edit { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 5px; background: transparent; color: #ffa900; cursor: pointer; }
+  .pay-edit .pencil-icon { width: 21px; height: 21px; }
   .pay-sum .pay-edit:hover { background: #fff8e6; }
   .pay-sum-row { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: baseline; padding-top: 10px; line-height: 1.8; }
   .pay-sum-row span { color: #828992; }
@@ -138,7 +138,7 @@
 <div class="pay-option-bank">
 <label class="pay-opt"><input type="radio" name="pay" value="account"><span class="pay-txt"><b>واریز به حساب</b><small>واریز مستقیم به شماره حساب شرکت</small></span><i class="ph ph-credit-card pay-ico" aria-hidden="true"></i></label>
 <section class="pay-sum" aria-label="اطلاعات واریز ثبت‌شده">
-<div class="pay-sum-hd"><b><span class="receipt-check" aria-hidden="true">✓</span>اطلاعات واریز ثبت شد</b><button type="button" class="pay-edit" aria-label="ویرایش اطلاعات واریز" title="ویرایش اطلاعات واریز"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 5 5 5M4 20h16M5 15l-1 4 4-1L20 6a2.1 2.1 0 0 0-3-3Z"/></svg></button></div>
+<div class="pay-sum-hd"><b><span class="receipt-check" aria-hidden="true">✓</span>اطلاعات واریز ثبت شد</b><button type="button" class="pay-edit" aria-label="ویرایش اطلاعات واریز" title="ویرایش اطلاعات واریز"><svg class="pencil-icon" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z"/></svg></button></div>
 <div class="pay-sum-row"><span>بانک مقصد</span><b>سینا</b></div>
 <div class="pay-sum-row"><span>تاریخ واریز</span><b class="s-date"></b></div>
 <div class="pay-sum-row"><span>کد پیگیری</span><b class="s-code"></b></div>
