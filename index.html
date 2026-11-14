@@ -109,7 +109,7 @@
   .pay-modal .menu-fixed-body { min-height: 0; } /* lets the body scroll so the save button stays on screen */
   .pay-modal .box-header { display: flex; justify-content: space-between; align-items: center; }
   .pay-modal .back-btn { display: flex; align-items: center; gap: 2px; padding: 0; border: 0; background: none; color: #e5383b; font: inherit; font-size: 14px; cursor: pointer; }
-  .pay-modal .has-copy { display: inline-flex; align-items: center; gap: 6px; }
+  .pay-modal .has-copy { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .pay-modal a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; pointer-events: none; } /* Safari auto-links numbers; keep them plain text */
   .pay-modal .copy-btn { display: inline-flex; align-items: center; gap: 4px; height: 24px; margin: 0; padding: 0; border: 0; background: none; color: #828992; font-size: 12px; line-height: 1; cursor: pointer; }
   .pay-modal .copy-btn > i { font-size: 16px; }
@@ -240,6 +240,13 @@
     const t = b.lastElementChild; t.innerHTML = 'کپی شد<i class="ph ph-check" aria-hidden="true"></i>'; b.classList.add("done");
     clearTimeout(b.timer); b.timer = setTimeout(() => b.classList.remove("done"), 1500); // badge fades out; text stays until the next copy
   }; });
+  // tap or long-press on the number itself copies too (no text selection / iOS callout)
+  pm.querySelectorAll(".has-copy").forEach(n => { const b = n.querySelector(".copy-btn"); let hold;
+    n.onpointerdown = e => { n.held = false; if (!e.target.closest(".copy-btn")) hold = setTimeout(() => { n.held = true; b.click(); }, 450); };
+    n.onpointerup = n.onpointercancel = n.onpointerleave = () => clearTimeout(hold);
+    n.onclick = e => { if (!e.target.closest(".copy-btn") && !n.held) b.click(); };
+    n.oncontextmenu = e => e.preventDefault();
+  });
   pm.querySelector(".back-btn").onclick = () => pm.close();
   pm.onclose = () => { if (!saved) bank.checked = false; }; // closed without saving: the choice is not complete
   // mock: no real upload, a click just fills in a sample receipt
