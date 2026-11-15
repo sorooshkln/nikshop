@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="format-detection" content="telephone=no, date=no, email=no, address=no">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
 <script>
   // iOS zooms into any field under 16px on focus; maximum-scale=1 stops that (iOS still allows pinch-zoom). Only on iOS, so Android pinch-zoom is untouched.
   if (/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1))
@@ -14,141 +14,7 @@
 <!-- the live page's own styles (niksms.com/fa/pay/…) -->
 <link rel="stylesheet" href="niksms-css/app_shop.css">
 <link rel="stylesheet" href="niksms-css/shared.css">
-<style>
-  /* site fonts, from the local fonts/ folder */
-  @font-face { font-family: IRANSans-FaNum; src: url(fonts/IRANSANSWEBFANUM.ttf); font-weight: 400; }
-  @font-face { font-family: IRANSans-FaNum; src: url(fonts/IRANSANSWEBFANUM_MEDIUM.ttf); font-weight: 500 900; }
-  @font-face { font-family: IRANSans-FaNum-Light; src: url(fonts/IRANSANSWEBFANUM_LIGHT.ttf); }
-  @font-face { font-family: IRANSans-FaNum-UltraLight; src: url(fonts/IRANSANSWEBFANUM_ULTRALIGHT.ttf); }
-  body { margin: 0; overflow-x: clip; background: #fff; padding-bottom: calc(140px + env(safe-area-inset-bottom)); } /* room so the sticky bar never covers the page end */
-
-  /* no phone mock-up: drop the thick rounded frame and the notch */
-  .wp-pay-orders { border: 0 !important; border-radius: 0 !important; margin: 0 auto !important; padding-top: 16px !important; padding-bottom: 0 !important; } /* site adds 130px below; body padding already clears the sticky bar */
-  .wp-pay-orders .notch { display: none !important; }
-
-  /* sticky pay bar: total next to the button, stuck to the bottom of the phone */
-  .paybar { position: fixed; inset: auto 0 0 0; z-index: 50; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 12px max(16px, calc(50% - 194px)) calc(26px + env(safe-area-inset-bottom)); /* bar spans the full width; its content stays page-wide (420px) */ border-radius: 12px 12px 0 0; background: #fff; border-top: 1px solid #eceef0; box-shadow: 0 -1px 3px rgba(16, 24, 48, .04), 0 -6px 18px rgba(16, 24, 48, .08); font-family: IRANSans-FaNum, sans-serif; }
-  .paybar .assure { flex: 1 0 100%; display: flex; justify-content: center; align-items: center; gap: 4px; margin: -1px 0 -13px; font-size: 11px; color: #646b74; }
-  .paybar .assure i { color: #00a142; font-size: 12px; }
-  .paybar .total { flex: 1 0 100%; display: flex; justify-content: space-between; align-items: center; padding: 4px 12px; border-radius: 8px; background: rgba(231, 248, 242, .8); line-height: 1.6; white-space: nowrap; }
-  .paybar .total small { font-size: 13px; font-weight: 400; color: #333; }
-  .paybar .total b { font-size: 18px; font-weight: 700; color: #00b74a; }
-  .paybar .total b span { font-size: 13px; font-weight: 400; color: #36a927; }
-  .paybar button { position: relative; overflow: hidden; flex: 65 1 0; min-width: 0; padding: 0; height: 42px; border: 0; border-radius: 8px; background: #00b74a; color: #fff; font: inherit; font-family: IRANSans-FaNum-Light, sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; }
-  .paybar button::after { content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .55), transparent); transform: skewX(-20deg); animation: shine 3.4s infinite; }
-  .paybar { animation: paybarIn .5s .3s cubic-bezier(.2, .8, .2, 1) both; } /* slides up from below on load */
-  @keyframes paybarIn { from { transform: translateY(100%); } }
-  @media (prefers-reduced-motion: reduce) { .paybar, .paybar button::after { animation: none; } }
-  .paybar button:active { background: #00a142; }
-  /* pre-invoice: same orange outline as the site's .orange-reverse */
-  .paybar .pre { flex: 35 1 0; display: flex; align-items: center; justify-content: center; gap: 6px; background: #fff; border: 1px solid #ffa900; color: #ffa900; font-weight: 400; }
-  .paybar .pre::after { content: none; }
-  .paybar .pre:active { background: #fff8e6; }
-  /* change-order: a step stronger than the site's light grey button, still secondary */
-  .wp-pay-orders .change-order-btn { font-family: IRANSans-FaNum, sans-serif; font-weight: 400; font-size: 13px; border-color: #d3d7dc !important; background: #f6f7f8 !important; color: #1f2329; }
-  .wp-pay-orders .change-order-btn i { color: #1f2329; }
-  /* quiet box around change-order: question on the right, button on the left */
-  .change-box { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; padding: 10px 12px; background: #f5f6f7; border: 1px solid #e1e4e8; border-radius: 8px; font-family: IRANSans-FaNum, sans-serif; font-size: 13px; color: #646b74; }
-  .change-box .change-order-btn { flex: none; width: auto !important; margin: 0 !important; padding: 0 14px !important; background: #fff !important; }
-  /* footer: one quiet row — trust seal on the right, "made by" on the left */
-  .mini-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; row-gap: 17px; margin-top: 22px; position: relative; isolation: isolate; padding: 19px 0 13px; font-family: IRANSans-FaNum, sans-serif; font-size: 13px; }
-  .mini-foot::before { content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: 50%; width: 100vw; margin-left: -50vw; background: #fafafa; border-top: 1px solid #e1e4e8; } /* band with an edge-to-edge divider runs edge to edge */
-  .mini-foot .copy { flex: 1 0 100%; margin: 0; padding-top: 11px; border-top: 1px solid #eff1f3; text-align: center; font-size: 10px; line-height: 1.5; color: #8b929a; }
-  .mini-foot .copy b { font-weight: 500; color: #646b74; }
-  .mini-foot a { display: flex; align-items: center; gap: 6px; color: #9aa1a9; text-decoration: none; }
-  .mini-foot img { height: 18px; }
-  .mini-foot .seal { justify-content: center; box-sizing: border-box; height: 32px; padding: 0 11px; gap: 7px; border: 1px solid #e1e4e8; border-radius: 8px; background: #fff; font-size: 12px; color: #646b74; } /* trust seal: icon + short line */
-  .mini-foot .seal img { height: 18px; }
-  .mini-foot .logo { height: 28px; }
-  .paybar button:focus-visible { outline: 2px solid #00b74a; outline-offset: 2px; }
-  /* error dialog on «تکمیل سفارش»: outlined card, full-width tinted «خطا» header tile (solid icon), message, #ededed divider, compact green action.
-     Sized for any message: max 360px, wraps long words, scrolls past screen height. */
-  .err-dlg { width: calc(100vw - 32px); max-width: 360px; max-height: calc(100dvh - 32px); box-sizing: border-box; padding: 0; overflow-y: auto; border: 1px solid #e3e6ea; border-radius: 14px; outline: 4px solid rgba(255, 255, 255, .2); background: #fff; box-shadow: 0 1px 2px rgba(16, 24, 48, .05), 0 12px 32px rgba(16, 24, 48, .14); font-family: IRANSans-FaNum, sans-serif; color: #1f2329; overflow-wrap: anywhere; }
-  .err-dlg[open] { animation: dlgIn .22s cubic-bezier(.2, .8, .2, 1); }
-  .err-dlg::backdrop { background: rgba(16, 24, 48, .35); backdrop-filter: blur(2px); }
-  @keyframes dlgIn { from { opacity: 0; transform: translateY(8px) scale(.98); } }
-  @media (prefers-reduced-motion: reduce) { .err-dlg[open] { animation: none; } }
-  .err-dlg .hd { display: flex; align-items: center; gap: 6px; margin: 6px; padding: 8px 10px; border: 1px solid #fbe6e6; border-radius: 8px; background: #fff5f5; } /* inset header tile */
-  .err-dlg .hd svg { flex: none; color: #e5383b; }
-  .err-dlg .hd b { flex: 1; font-size: 14px; font-weight: 500; line-height: 1.6; color: #b42318; }
-  .err-dlg p { margin: 0; padding: 8px 16px 12px; border-bottom: 1px solid #ededed; font-size: 14px; line-height: 1.9; color: #1f2329; text-wrap: pretty; }
-  .err-dlg .r { color: #e5383b; font-weight: 500; }
-  .err-dlg .g { color: #00953c; font-weight: 500; }
-  .err-dlg .ok { display: block; min-width: 76px; height: 30px; margin: 10px auto 10px 12px; padding: 0 18px; border: 0; border-radius: 8px; background: #00b74a; color: #fff; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: background .15s, transform .1s; }
-  .err-dlg .ok:hover { background: #00a844; }
-  .err-dlg .ok:active { background: #00a142; transform: scale(.97); }
-  /* warning variant (<dialog class="err-dlg warn">): same layout, header tile goes orange */
-  .err-dlg.warn .hd { border-color: #fde3b0; background: #fff7e6; }
-  .err-dlg.warn .hd svg { color: #f59e0b; }
-  .err-dlg.warn .hd b { color: #b45309; }
-  .err-dlg .ok:focus-visible { outline: 2px solid #00b74a; outline-offset: 2px; }
-  /* buyer info: the name input first, the read-only values below as a right/left label-value table */
-  .content .input-holder:has(.like-input) { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 0; padding: 9px 0; border-top: 1px solid #f0f1f3; }
-  .content .input-holder:has(.like-input) .label { flex: 1; margin: 0; color: #777; font-size: 13px; }
-  .content .like-input { flex: none; overflow: visible; width: auto; height: auto; padding: 0; border: 0; background: none; font-size: 13px; font-weight: 500; color: #333; }
-  /* guarantee under the pay buttons, at the moment of decision */
-  /* payment method: two separate radio boxes with a gap, same width as the other boxes */
-  .pay-opts { display: flex; flex-direction: column; gap: 12px; margin: 0 0 12px; }
-  .pay-opt { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid #e3e6ea; border-radius: 8px; background: #fff; cursor: pointer; font-family: IRANSans-FaNum, sans-serif; }
-  .pay-opt:has(input:checked) { border-color: #00b74a; background: #f3fbf6; }
-  .pay-opts.xt-error .pay-opt { border: 1px solid red !important; }
-  .pay-opts.xt-error { border: 0 !important; }
-  .pay-opt input { flex: none; width: 16px; height: 16px; margin: 0; accent-color: #00b74a; cursor: pointer; }
-  .pay-txt { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-  .pay-ico { flex: none; width: 34px; height: 34px; display: grid; place-items: center; font-size: 22px; line-height: 1; color: #1f2329; opacity: .3; }
-  .pay-logo { width: 30px; height: 30px; opacity: 1; object-fit: contain; }
-  .pay-txt b { font-size: 13px; font-weight: 500; color: #333; }
-  .pay-txt small { font-size: 12px; color: #777; }
-  /* guarantee under the pay buttons, at the moment of decision */
-  /* bank-transfer modal: full screen on phones, page width on desktop; inner parts use the site's own modal CSS */
-  .pay-modal { width: 100%; max-width: 420px; height: 100dvh; max-height: none; margin: 0 auto; padding: 0; border: 0; background: #fff; overflow: hidden; }
-  .pay-modal, .pay-modal * { font-family: IRANSans-FaNum, sans-serif; } /* the modal sits outside the page wrapper that carries the site font */
-  .pay-modal::backdrop { background: rgba(16, 24, 48, .35); }
-  .pay-modal .modal-dialog, .pay-modal .modal-content { height: 100%; min-height: 0 !important; margin: 0 !important; width: 100% !important; max-width: none !important; border: 0; border-radius: 0; box-shadow: none; }
-  .pay-modal > div, .pay-modal .menu-fixed-design { height: 100%; min-height: 0 !important; }
-  .pay-modal .menu-fixed-body { min-height: 0; } /* lets the body scroll so the save button stays on screen */
-  .pay-modal .box-header { display: flex; justify-content: space-between; align-items: center; }
-  .pay-modal .back-btn { display: flex; align-items: center; gap: 2px; padding: 0; border: 0; background: none; color: #e5383b; font: inherit; font-size: 14px; cursor: pointer; }
-  .pay-modal .has-copy { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-  .pay-modal a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; pointer-events: none; } /* Safari auto-links numbers; keep them plain text */
-  .pay-modal .copy-btn { display: inline-flex; align-items: center; gap: 4px; height: 24px; margin: 0; padding: 0; border: 0; background: none; color: #828992; font-size: 12px; line-height: 1; cursor: pointer; }
-  .pay-modal .copy-btn > i { font-size: 16px; }
-  .pay-modal .copy-btn.done { color: #00b74a; }
-  .pay-modal .copy-btn { position: relative; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-  .pay-modal .copy-t { position: absolute; top: 50%; left: 0; transform: translateY(-50%); clip-path: inset(0 100% 0 0 round 999px); opacity: 0; transition: opacity .15s ease, clip-path .3s cubic-bezier(.2, .8, .2, 1); z-index: 5; display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 999px; background: #e6f7ec; color: #00873a; border: 1px solid rgba(0, 135, 58, .3); font-size: 11px; line-height: 18px; white-space: nowrap; box-shadow: 0 0 0 3px #fff; pointer-events: none; } /* floats over the number, no layout shift */
-  @media (prefers-reduced-motion: reduce) { .pay-modal .copy-t { transition: none; } }
-  .pay-modal .copy-btn.done .copy-t { opacity: 1; clip-path: inset(0 0 0 0 round 999px); }
-  .pay-modal .copy-t i { font-size: 13px; }
-  .pay-modal .copy-btn.done > i { visibility: hidden; }
-  .pay-modal .fish { cursor: pointer; }
-  .pay-modal [hidden] { display: none !important; } /* site CSS sets display on inputs and .input-holder */
-  .pay-modal .past-sel { display: flex; gap: 8px; width: 100%; }
-  .pay-modal .past-sel select { flex: 1; min-width: 0; height: 40px; }
-  /* Saved transfer details stay separate from the radio label. */
-  .pay-option-bank { min-width: 0; }
-  .pay-option-bank:has(input:checked) { border: 1px solid #00b74a; border-radius: 10px; background: #f3fbf6; }
-  .pay-option-bank:has(input:checked) > .pay-opt { border-color: transparent; background: none; }
-  .pay-opts.xt-error .pay-option-bank:has(input:checked) { border-color: red; }
-  .pay-opts .pay-sum { display: none; position: relative; margin: 8px 12px 12px; padding: 12px 14px 14px; border: 1px solid #d5d9dd; border-radius: 8px; background: #fff; font-family: IRANSans-FaNum, sans-serif; font-size: 12px; min-width: 0; }
-  .pay-option-bank:has(input:checked) .pay-sum.filled { display: block; }
-  .pay-sum-hd { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid #edf0ee; }
-  .pay-sum-hd b { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 400; color: #333; }
-  .pay-sum .pay-edit { display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 10px; box-sizing: border-box; border: 1px solid #ffa900; border-radius: 6px; background: #fff; color: #ffa900; font: inherit; font-size: 12px; cursor: pointer; }
-  .pay-edit svg { width: 15px; height: 15px; }
-  .pay-sum .pay-edit:hover { background: #fff8e6; }
-  .pay-sum-row { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: baseline; padding-top: 10px; line-height: 1.8; }
-  .pay-sum-row span { color: #828992; }
-  .pay-sum-row b { min-width: 0; text-align: left; font-size: 12px; font-weight: 400; color: #333; overflow-wrap: anywhere; }
-  .pay-sum-row .s-code, .pay-sum-row .s-date { direction: ltr; unicode-bidi: isolate; }
-  .pay-edit:focus-visible { outline: 2px solid #ffa900; outline-offset: 3px; }
-  .pay-opts:not(:has(input[value=online]:checked)) + .online-msg { display: none; }
-  /* box spacing +10% */
-  .wp-pay-orders .vital-msg.cheque-btn { margin: 30px 0; }
-  .wp-pay-orders > div > .vital-msg.green-msg { margin-bottom: 25px !important; }
-  .wp-pay-orders > div > .info-keeper { margin-top: 21px !important; margin-bottom: 25px !important; }
-  .wp-pay-orders > div > .sep-section { margin-top: 22px; }
-  .wp-pay-orders .mini-foot { margin-top: 28px; } .wp-pay-orders .sep-section:has(.pay-opts) { margin-bottom: 0; }
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="wp-pay-orders smart-form "><div><div class="notch"></div><div class="row-info"><div class="receipt__box"><i class="nc-icon nc-shop-receipt"></i><p class="form-title">صورتحساب پرداخت</p></div><div class="logo-holder"><div class="logo user-logo"><a draggable="false" href="javascript:void(0)"><div class="back-logo" style="background-image: url('https://niksms.com/frontend/dist/app_shop/assets/images/LOGO-NIKSMS.svg') "></div></a></div></div></div><div class="horizontal_separator full_separator top_separator"></div><div class="vital-msg green-msg"><div><span style="color:green;">【کاربر】 عزیز</span>، برای <span style="color:green;">تکمیل سفارش خود، مراحل این صفحه را تا انتها انجام دهید</span>. پس از <span style="color:red;">تکمیل اطلاعات و پرداخت</span>، <span style="color:green;">سفارش شما نهایی و برای ارسال دستگاه آماده می‌شود</span>.</div></div><div class="info-keeper vital-msg default-msg this-msg"><label class="info-keeper-header header-vital"> جزئیات سفارش </label><div class="list-msg"><div class="itms main_order_infos full"><div class="order_infos_top"><div class="img_and_title"><img draggable="false" class="" alt="" src="https://niksms.com/Storage/Temp/15a01ea3-c47f-4fd0-8832-aaf247ba17f5.jpg"><div class="titles"><p> دستگاه نیک پوز </p><p class="count_row"> تعداد : 1 </p></div></div></div><div class="horizontal_separator full_view_separator"></div></div><div class="details-holder"><div class="type"><label class="type-title">نحوه پرداخت</label><div class="flex gap-4"><span class="type-amount green-label"> نقدی </span><i class="back_change_ico question_orange_ico"></i></div></div><div class="type"><label class="type-title">فرآیند سفارش</label><div class="flex gap-4"><span class="type-amount red-label"> آنلاین و سریع </span><i class="back_change_ico question_orange_ico"></i></div></div><div class="horizontal_separator"></div><div class="type"><label class="type-title w-auto flex">قیمت دستگاه </label><div class="flex"><span class="type-amount bld-txt green-label"> 270,000,000 </span><span> ریال </span></div></div><div class="last-price-container-modal"><div class="last-price-wrapper-modal"><span class="last-price-title green-label bld-txt"> مبلغ نهایی: </span><span class="bld-txt green-label"> 270,000,000 ریال </span></div></div><div class="horizontal_separator"></div><div class="accordions_wrapper-modal accordions__modal"><div class="nik_accordion red device_gifts inside_modal"><div class="head"><div class="titles"><i class="nc-icon nc-shop-gift head__icon"></i><p>هدایای همراه هر دستگاه</p></div><button class="arrow"><i class="nc-icon nc-shop-chevron-down arrow__icon"></i></button></div><div class="body"><div class="type"><label class="type-title w-auto"> یک‌سال عضویت پنل </label><div class="prices-wrapper"><div class="value-and-tooltip"><span class="type-amount justify-end line-txt"> 44,000,000 <span> ریال </span></span><i class="back_change_ico question_orange_ico"></i></div><span class="type-amount free-label bld-txt green-label">رایگان</span></div></div><div class="type"><label class="type-title w-auto"> پیامک اولیه هدیه </label><div class="value-and-tooltip"><span class="type-amount">500,000 ریال</span><i class="back_change_ico question_orange_ico"></i></div></div></div></div><div class="horizontal_separator"></div><div class="nik_accordion green garantee inside_modal"><div class="head"><div class="titles"><i class="nc-icon nc-shop-shield-check head__icon"></i><p>ضمانت مرجوعی و گارانتی دستگاه</p></div><button class="arrow"><i class="nc-icon nc-shop-chevron-down arrow__icon"></i></button></div><div class="body"><div class="type"><label class="type-title w-auto"> ضمانت مرجوعی </label><div class="value-and-tooltip"><span class="type-amount">15 روز</span><i class="back_change_ico question_orange_ico"></i></div></div><div class="type"><label class="type-title w-auto"> گارانتی و تعویض </label><div class="value-and-tooltip"><span class="type-amount">۱ سال</span><i class="back_change_ico question_orange_ico"></i></div></div><div class="type"><label class="type-title w-auto"> خدمات پس از فروش </label><div class="value-and-tooltip"><span class="type-amount">۲ سال</span><i class="back_change_ico question_orange_ico"></i></div></div></div></div></div></div></div><div class="itms sum"><span>جمع کل قابل پرداخت</span><span class="grn-result">270,000,000 ریال</span></div></div><div class="content"><div class="sep-section vital-msg default-msg"><label class="header-vital">اطلاعات خریدار</label><div class="input-holder"><label class="label">نام و نام خانوادگی</label><input></div><div class="input-holder"><label class="label">شماره موبایل</label><input value="+989120000000" dir="ltr" disabled></div></div></div><div class="sep-section vital-msg default-msg"><label class="header-vital">روش پرداخت</label><div class="pay-opts">
@@ -179,96 +45,16 @@
 <div class="box-header flx-head"><label class="label">اطلاعات حساب</label><button type="button" class="back-btn">بازگشت<i class="ph ph-caret-left" aria-hidden="true"></i></button></div>
 <div class="menu-fixed-body"><div class="content">
 <div class="vital-msg yellow-msg">خریدار گرامی، در این بخش می‌توانید <span style="color:green;">مبلغ صورتحساب (270,000,000 ریال)</span> را به یکی از حساب‌های شرکت واریز کنید و <span style="color:green;">اطلاعات آن (رسید، تاریخ و کد پیگیری)</span> را اینجا ثبت کنید، توجه فرمایید در <span style="color:red;">پرداخت واریز به حساب</span> به دلیل نیاز به <span style="color:red;">تأیید حسابداری</span>، ممکن است <span style="color:red;">تحویل سفارش شما یک روز کاری به تأخیر بیفتد</span>.</div>
-<div class="sep-section vital-msg default-msg"><div class="header-vital">اطلاعات حساب</div><div class="line-text"><div class="span-holder"><span class="label">نام بانک</span> <span class="label ltr">سینا</span></div><div class="span-holder"><span class="label">حساب بنام</span> <span class="label ltr">نوآوران دوراندیش زمان</span></div><div class="span-holder"><span class="label">شماره کارت</span> <span class="label ltr has-copy">6393 4670 0012 3763<button type="button" class="copy-btn" data-copy="6393467000123763" aria-label="کپی شماره کارت"><i class="ph ph-copy" aria-hidden="true"></i><span class="copy-t"></span></button></span></div><div class="span-holder"><span class="label">شماره حساب</span> <span class="label ltr has-copy">414 13 4139890 1<button type="button" class="copy-btn" data-copy="4141341398901" aria-label="کپی شماره حساب"><i class="ph ph-copy" aria-hidden="true"></i><span class="copy-t"></span></button></span></div><div class="span-holder"><span class="label">شماره شبا</span> <span class="label ltr has-copy">IR 8905 9004 1401 3041 3989 0001<button type="button" class="copy-btn" data-copy="IR890590041401304139890001" aria-label="کپی شماره شبا"><i class="ph ph-copy" aria-hidden="true"></i><span class="copy-t"></span></button></span></div></div></div>
+<div class="pay-amount"><span class="pa-lbl">مبلغ قابل واریز</span><span class="pa-val"><span><b>270,000,000</b> ریال</span><small>معادل ۲۷ میلیون تومان</small></span></div>
+<div class="sep-section vital-msg default-msg"><div class="header-vital">اطلاعات حساب</div><div class="line-text"><div class="btn-group switch-shared-btns purchase-tab bank-tabs"><button type="button" class="btn silver-button new-waiting-btn" data-bank="mellat"><img class="tab-logo" src="mellat.png" alt="">بانک ملت</button> <button type="button" class="btn silver-button new-waiting-btn active" data-bank="sina"><svg class="tab-logo" viewBox="0 0 100 100" aria-hidden="true"><mask id="sina-cut-tab"><rect width="100" height="100" fill="#fff"/><path d="M29 40.2 75 13.7M71 59.8 25 86.3" stroke="#000" stroke-width="6"/></mask><path fill="#1b4a9e" fill-rule="evenodd" mask="url(#sina-cut-tab)" d="M50 2 91.6 26v48L50 98 8.4 74V26ZM50 28 69 39v22L50 72 31 61V39Z"/><circle cx="50" cy="50" r="15" fill="#fbb817"/></svg>بانک سینا</button></div><div class="bank-card" data-bank="sina"><div class="bc-face"><div class="bc-top"><span class="bc-bank"><svg class="bc-logo" viewBox="0 0 100 100" aria-hidden="true"><mask id="sina-cut"><rect width="100" height="100" fill="#fff"/><path d="M29 40.2 75 13.7M71 59.8 25 86.3" stroke="#000" stroke-width="6"/></mask><path fill="#1c4ea6" fill-rule="evenodd" mask="url(#sina-cut)" d="M50 2 91.6 26v48L50 98 8.4 74V26ZM50 28 69 39v22L50 72 31 61V39Z"/><circle cx="50" cy="50" r="15" fill="#fbb817"/></svg><b>بانک سینا</b></span></div><span class="has-copy bc-num"><span>6393 4670 0012 3763</span><button type="button" class="copy-btn" data-copy="6393467000123763" aria-label="کپی شماره کارت"><i class="ph ph-copy" aria-hidden="true"></i><span class="copy-t"></span></button></span><span class="bc-name"><small>به نام</small><b>نوآوران دوراندیش زمان</b></span></div><div class="bc-info"><div class="bc-row"><small>شماره حساب</small><span class="has-copy">414 13 4139890 1<button type="button" class="copy-btn" data-copy="4141341398901" aria-label="کپی شماره حساب"><i class="ph ph-copy" aria-hidden="true"></i><span class="copy-t"></span></button></span></div><div class="bc-row"><small>شبا</small><span class="has-copy">IR 8905 9004 1401 3041 3989 0001<button type="button" class="copy-btn" data-copy="IR890590041401304139890001" aria-label="کپی شماره شبا"><i class="ph ph-copy" aria-hidden="true"></i><span class="copy-t"></span></button></span></div></div></div><div class="bank-card bc-mellat" data-bank="mellat" hidden><div class="bc-face"><div class="bc-top"><span class="bc-bank"><img class="bc-logo" src="mellat.png" alt=""><b>بانک ملت</b></span></div><span class="has-copy bc-num"><span>6104 3378 0012 3456</span><button type="button" class="copy-btn" data-copy="6104337800123456" aria-label="کپی شماره کارت"><i class="ph ph-copy" aria-hidden="true"></i><span class="copy-t"></span></button></span><span class="bc-name"><small>به نام</small><b>نوآوران دوراندیش زمان</b></span></div><div class="bc-info"><div class="bc-row"><small>شماره حساب</small><span class="has-copy">4139890012<button type="button" class="copy-btn" data-copy="4139890012" aria-label="کپی شماره حساب"><i class="ph ph-copy" aria-hidden="true"></i><span class="copy-t"></span></button></span></div><div class="bc-row"><small>شبا</small><span class="has-copy">IR 0601 2000 0000 0041 3989 0012<button type="button" class="copy-btn" data-copy="IR060120000000004139890012" aria-label="کپی شماره شبا"><i class="ph ph-copy" aria-hidden="true"></i><span class="copy-t"></span></button></span></div></div></div></div></div>
 <div class="sep-section vital-msg default-msg"><div class="header-vital">ثبت اطلاعات واریز</div>
 <div class="input-holder"><span class="label">تصویر فیش واریزی</span> <input class="input text-center sub-item green-label large-inp fish" readonly><input type="file" accept="image/*" hidden> <span class="question-box large-box"><i class="back_change_ico add_green_full_ico"></i></span></div>
 <div class="input-holder"><label class="label">تاریخ پرداخت</label><div class="btn-group switch-shared-btns purchase-tab pay-date"><button type="button" class="btn silver-button new-waiting-btn code-btn" data-d="past">گذشته</button> <button type="button" class="btn silver-button new-waiting-btn" data-d="today">امروز</button></div></div>
 <div class="input-holder past-date" hidden><label class="label">انتخاب تاریخ</label><div class="past-sel"><select class="input" aria-label="سال"><option value="">سال</option></select><select class="input" aria-label="ماه"><option value="">ماه</option></select><select class="input" aria-label="روز"><option value="">روز</option></select></div></div>
-<div class="input-holder"><span class="label">کد پیگیری</span> <input class="input sub-item text-center large-inp ltr track" inputmode="numeric"></div>
+<div class="input-holder"><span class="label">کد پیگیری</span> <input class="input sub-item text-center large-inp ltr track" inputmode="numeric" enterkeyhint="done"></div>
 </div></div></div>
 <div class="btn-holder"><button type="button" class="shoping-btn silver-button green-full new-waiting-btn large-btn full-size pay-save"><i class="back_change_ico check_green_ico"></i> ثبت اطلاعات واریز</button></div>
 </div></div></div></div></dialog>
-<script>
-  // «تکمیل سفارش»: red border on the empty name + both cheque rows, then the error dialog
-  const rows = [...document.querySelectorAll(".cheque-btn")];
-  const name = document.querySelector(".content input");
-  const toName = () => { scrollTo({ top: name.getBoundingClientRect().top + scrollY - 60, behavior: "smooth" }); name.focus({ preventScroll: true }); }; // field at the top, 60px below the edge, ready to type
-  document.querySelector(".paybar button").onclick = () => {
-    name.classList.toggle("xt-error", !name.value.trim());
-    rows.forEach(r => r.classList.add("xt-error"));
-    payBox.classList.toggle("xt-error", !radios.some(r => r.checked));
-    dlg.showModal();
-  };
-  // payment method: picking one clears the red on the options box
-  const payBox = document.querySelector(".pay-opts");
-  const radios = [...payBox.querySelectorAll("input")];
-  radios.forEach(r => r.onchange = () => payBox.classList.remove("xt-error"));
-  name.oninput = () => name.classList.remove("xt-error"); // red goes away as soon as the user types
-  const dlg = document.querySelector(".err-dlg");
-  dlg.onclick = e => (e.target === dlg || e.target.closest(".ok")) && dlg.close(); // تایید or the backdrop close it
-  dlg.onclose = () => { const first = document.querySelector(".xt-error"); first === name ? toName() : first?.scrollIntoView({ behavior: "smooth", block: "center" }); }; // then show the first red item
-  // pre-invoice: only the name is required; the cheque/address rows are not checked (and lose any old red)
-  document.querySelector(".paybar .pre").onclick = () => {
-    [...rows, payBox].forEach(r => r.classList.remove("xt-error"));
-    const bad = !name.value.trim();
-    name.classList.toggle("xt-error", bad);
-    if (bad) warn.showModal(); // warning, then straight to the name field
-  };
-  const warn = document.querySelector(".err-dlg.warn");
-  warn.onclick = e => (e.target === warn || e.target.closest(".ok")) && warn.close();
-  warn.onclose = toName;
-  // «واریز به حساب»: opens the account modal; saved info shows inside the bank option box
-  const bank = payBox.querySelector("input[value=account]");
-  const pm = document.querySelector(".pay-modal"), sum = document.querySelector(".pay-sum");
-  const fish = pm.querySelector(".fish"), code = pm.querySelector(".track");
-  const dayBtns = [...pm.querySelectorAll(".pay-date button")], past = pm.querySelector(".past-date");
-  const [ySel, mSel, dSel] = past.querySelectorAll("select");
-  const fa = (n, w = 1) => String(n).padStart(w, "0").replace(/\d/g, c => "۰۱۲۳۴۵۶۷۸۹"[c]);
-  const year = +new Intl.DateTimeFormat("en-u-ca-persian", { year: "numeric" }).format(new Date()).replace(/\D/g, "");
-  [year, year - 1].forEach(y => ySel.add(new Option(fa(y), y)));
-  "فروردین اردیبهشت خرداد تیر مرداد شهریور مهر آبان آذر دی بهمن اسفند".split(" ").forEach((m, i) => mSel.add(new Option(m, i + 1)));
-  for (let d = 1; d <= 31; d++) dSel.add(new Option(fa(d), d));
-  let saved = false;
-  bank.addEventListener("change", () => saved || pm.showModal());
-  sum.querySelector(".pay-edit").onclick = e => { e.preventDefault(); pm.showModal(); };
-  pm.querySelectorAll(".copy-btn").forEach(b => { b.onmousedown = e => e.preventDefault(); /* tap must not move focus or scroll */ b.onclick = async () => {
-    try { await navigator.clipboard.writeText(b.dataset.copy); } catch { // old Safari: off-screen read-only field, 16px + preventScroll so iOS doesn't zoom/scroll or move the address bar
-      const f = Object.assign(document.createElement("textarea"), { value: b.dataset.copy, readOnly: true });
-      f.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px";
-      pm.append(f); f.focus({ preventScroll: true }); f.setSelectionRange(0, f.value.length); document.execCommand("copy"); f.remove();
-    }
-    const t = b.lastElementChild; t.innerHTML = 'کپی شد<i class="ph ph-check" aria-hidden="true"></i>'; b.classList.add("done");
-    clearTimeout(b.timer); b.timer = setTimeout(() => b.classList.remove("done"), 1500); // badge fades out; text stays until the next copy
-  }; });
-  // tap or long-press on the number itself copies too (no text selection / iOS callout)
-  pm.querySelectorAll(".has-copy").forEach(n => { const b = n.querySelector(".copy-btn"); let hold;
-    n.onpointerdown = e => { n.held = false; if (!e.target.closest(".copy-btn")) hold = setTimeout(() => { n.held = true; b.click(); }, 450); };
-    n.onpointerup = n.onpointercancel = n.onpointerleave = () => clearTimeout(hold);
-    n.onclick = e => { if (!e.target.closest(".copy-btn") && !n.held) b.click(); };
-    n.oncontextmenu = e => e.preventDefault();
-  });
-  pm.querySelector(".back-btn").onclick = () => pm.close();
-  pm.onclose = () => { if (!saved) bank.checked = false; }; // closed without saving: the choice is not complete
-  // mock: no real upload, a click just fills in a sample receipt
-  fish.onclick = pm.querySelector(".question-box").onclick = () => { fish.value = "receipt-1405.jpg"; fish.classList.remove("xt-error"); };
-  dayBtns.forEach(b => b.onclick = () => {
-    dayBtns.forEach(x => { x.classList.toggle("active", x === b); x.classList.toggle("blue-lb", x === b); x.classList.remove("xt-error"); });
-    past.hidden = b.dataset.d !== "past";
-  });
-  pm.querySelectorAll("input, select").forEach(el => el.addEventListener("input", () => el.classList.remove("xt-error")));
-  pm.querySelector(".pay-save").onclick = () => {
-    const d = pm.querySelector(".pay-date .active")?.dataset.d;
-    dayBtns.forEach(b => b.classList.toggle("xt-error", !d));
-    [ySel, mSel, dSel].forEach(x => x.classList.toggle("xt-error", d === "past" && !x.value));
-    code.classList.toggle("xt-error", !code.value.trim());
-    if (pm.querySelector(".xt-error")) return;
-    sum.querySelector(".s-date").textContent = d === "today"
-      ? new Date().toLocaleDateString("fa-IR", { year: "numeric", month: "2-digit", day: "2-digit" })
-      : `${fa(ySel.value)}/${fa(mSel.value, 2)}/${fa(dSel.value, 2)}`;
-    sum.querySelector(".s-code").textContent = code.value.trim();
-    sum.classList.add("filled"); saved = true; payBox.classList.remove("xt-error");
-    pm.close();
-  };
-</script>
+<script src="app.js"></script>
 </body>
 </html>

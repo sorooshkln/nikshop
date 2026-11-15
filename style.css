@@ -1,0 +1,980 @@
+/* site fonts, from the local fonts/ folder */
+@font-face {
+  font-family: IRANSans-FaNum;
+  src: url(fonts/IRANSANSWEBFANUM.ttf);
+  font-weight: 400;
+}
+@font-face {
+  font-family: IRANSans-FaNum;
+  src: url(fonts/IRANSANSWEBFANUM_MEDIUM.ttf);
+  font-weight: 500 900;
+}
+@font-face {
+  font-family: IRANSans-FaNum-Light;
+  src: url(fonts/IRANSANSWEBFANUM_LIGHT.ttf);
+}
+@font-face {
+  font-family: IRANSans-FaNum-UltraLight;
+  src: url(fonts/IRANSANSWEBFANUM_ULTRALIGHT.ttf);
+}
+body {
+  margin: 0;
+  overflow-x: clip;
+  background: #fff;
+  padding-bottom: calc(140px + env(safe-area-inset-bottom));
+}
+/* room so the sticky bar never covers the page end */
+/* no phone mock-up: drop the thick rounded frame and the notch */
+.wp-pay-orders {
+  border: 0 !important;
+  border-radius: 0 !important;
+  margin: 0 auto !important;
+  padding-top: 16px !important;
+  padding-bottom: 0 !important;
+}
+/* site adds 130px below; body padding already clears the sticky bar */
+.wp-pay-orders .notch {
+  display: none !important;
+}
+/* sticky pay bar: total next to the button, stuck to the bottom of the phone */
+.paybar {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 50;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  padding: 12px max(16px, calc(50% - 194px)) calc(26px + env(safe-area-inset-bottom));
+  /* bar spans the full width; its content stays page-wide (420px) */
+  border-radius: 12px 12px 0 0;
+  background: #fff;
+  border-top: 1px solid #eceef0;
+  box-shadow: 0 -1px 3px rgba(16, 24, 48, .04), 0 -6px 18px rgba(16, 24, 48, .08);
+  font-family: IRANSans-FaNum, sans-serif;
+}
+.paybar .assure {
+  flex: 1 0 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin: -1px 0 -13px;
+  font-size: 11px;
+  color: #646b74;
+}
+.paybar .assure i {
+  color: #00a142;
+  font-size: 12px;
+}
+.paybar .total {
+  flex: 1 0 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 8px;
+  background: rgba(231, 248, 242, .8);
+  line-height: 1.6;
+  white-space: nowrap;
+}
+.paybar .total small {
+  font-size: 13px;
+  font-weight: 400;
+  color: #333;
+}
+.paybar .total b {
+  font-size: 18px;
+  font-weight: 700;
+  color: #00b74a;
+}
+.paybar .total b span {
+  font-size: 13px;
+  font-weight: 400;
+  color: #36a927;
+}
+.paybar button {
+  position: relative;
+  overflow: hidden;
+  flex: 65 1 0;
+  min-width: 0;
+  padding: 0;
+  height: 42px;
+  border: 0;
+  border-radius: 8px;
+  background: #00b74a;
+  color: #fff;
+  font: inherit;
+  font-family: IRANSans-FaNum-Light, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.paybar button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .55), transparent);
+  transform: skewX(-20deg);
+  animation: shine 3.4s infinite;
+}
+.paybar {
+  animation: paybarIn .5s .3s cubic-bezier(.2, .8, .2, 1) both;
+}
+/* slides up from below on load */
+@keyframes paybarIn {
+  from {
+    transform: translateY(100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .paybar, .paybar button::after {
+    animation: none;
+  }
+}
+.paybar button:active {
+  background: #00a142;
+}
+/* pre-invoice: same orange outline as the site's .orange-reverse */
+.paybar .pre {
+  flex: 35 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid #ffa900;
+  color: #ffa900;
+  font-weight: 400;
+}
+.paybar .pre::after {
+  content: none;
+}
+.paybar .pre:active {
+  background: #fff8e6;
+}
+/* change-order: a step stronger than the site's light grey button, still secondary */
+.wp-pay-orders .change-order-btn {
+  font-family: IRANSans-FaNum, sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  border-color: #d3d7dc !important;
+  background: #f6f7f8 !important;
+  color: #1f2329;
+}
+.wp-pay-orders .change-order-btn i {
+  color: #1f2329;
+}
+/* quiet box around change-order: question on the right, button on the left */
+.change-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 10px 12px;
+  background: #f5f6f7;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  font-family: IRANSans-FaNum, sans-serif;
+  font-size: 13px;
+  color: #646b74;
+}
+.change-box .change-order-btn {
+  flex: none;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 14px !important;
+  background: #fff !important;
+}
+/* footer: one quiet row — trust seal on the right, "made by" on the left */
+.mini-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  row-gap: 17px;
+  margin-top: 22px;
+  position: relative;
+  isolation: isolate;
+  padding: 19px 0 13px;
+  font-family: IRANSans-FaNum, sans-serif;
+  font-size: 13px;
+}
+.mini-foot::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  background: #fafafa;
+  border-top: 1px solid #e1e4e8;
+}
+/* band with an edge-to-edge divider runs edge to edge */
+.mini-foot .copy {
+  flex: 1 0 100%;
+  margin: 0;
+  padding-top: 11px;
+  border-top: 1px solid #eff1f3;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #8b929a;
+}
+.mini-foot .copy b {
+  font-weight: 500;
+  color: #646b74;
+}
+.mini-foot a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #9aa1a9;
+  text-decoration: none;
+}
+.mini-foot img {
+  height: 18px;
+}
+.mini-foot .seal {
+  justify-content: center;
+  box-sizing: border-box;
+  height: 32px;
+  padding: 0 11px;
+  gap: 7px;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 12px;
+  color: #646b74;
+}
+/* trust seal: icon + short line */
+.mini-foot .seal img {
+  height: 18px;
+}
+.mini-foot .logo {
+  height: 28px;
+}
+.paybar button:focus-visible {
+  outline: 2px solid #00b74a;
+  outline-offset: 2px;
+}
+/* error dialog on «تکمیل سفارش»: outlined card, full-width tinted «خطا» header tile (solid icon), message, #ededed divider, compact green action.
+     Sized for any message: max 360px, wraps long words, scrolls past screen height. */
+.err-dlg {
+  width: calc(100vw - 32px);
+  max-width: 360px;
+  max-height: calc(100dvh - 32px);
+  box-sizing: border-box;
+  padding: 0;
+  overflow-y: auto;
+  border: 1px solid #e3e6ea;
+  border-radius: 14px;
+  outline: 4px solid rgba(255, 255, 255, .2);
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(16, 24, 48, .05), 0 12px 32px rgba(16, 24, 48, .14);
+  font-family: IRANSans-FaNum, sans-serif;
+  color: #1f2329;
+  overflow-wrap: anywhere;
+}
+.err-dlg[open] {
+  animation: dlgIn .22s cubic-bezier(.2, .8, .2, 1);
+}
+.err-dlg::backdrop {
+  background: rgba(16, 24, 48, .35);
+  backdrop-filter: blur(2px);
+}
+@keyframes dlgIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(.98);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .err-dlg[open] {
+    animation: none;
+  }
+}
+.err-dlg .hd {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px;
+  padding: 8px 10px;
+  border: 1px solid #fbe6e6;
+  border-radius: 8px;
+  background: #fff5f5;
+}
+/* inset header tile */
+.err-dlg .hd svg {
+  flex: none;
+  color: #e5383b;
+}
+.err-dlg .hd b {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: #b42318;
+}
+.err-dlg p {
+  margin: 0;
+  padding: 8px 16px 12px;
+  border-bottom: 1px solid #ededed;
+  font-size: 14px;
+  line-height: 1.9;
+  color: #1f2329;
+  text-wrap: pretty;
+}
+.err-dlg .r {
+  color: #e5383b;
+  font-weight: 500;
+}
+.err-dlg .g {
+  color: #00953c;
+  font-weight: 500;
+}
+.err-dlg .ok {
+  display: block;
+  min-width: 76px;
+  height: 30px;
+  margin: 10px auto 10px 12px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 8px;
+  background: #00b74a;
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+}
+.err-dlg .ok:hover {
+  background: #00a844;
+}
+.err-dlg .ok:active {
+  background: #00a142;
+  transform: scale(.97);
+}
+/* warning variant (<dialog class="err-dlg warn">): same layout, header tile goes orange */
+.err-dlg.warn .hd {
+  border-color: #fde3b0;
+  background: #fff7e6;
+}
+.err-dlg.warn .hd svg {
+  color: #f59e0b;
+}
+.err-dlg.warn .hd b {
+  color: #b45309;
+}
+.err-dlg .ok:focus-visible {
+  outline: 2px solid #00b74a;
+  outline-offset: 2px;
+}
+/* buyer info: the name input first, the read-only values below as a right/left label-value table */
+.content .input-holder:has(.like-input) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 9px 0;
+  border-top: 1px solid #f0f1f3;
+}
+.content .input-holder:has(.like-input) .label {
+  flex: 1;
+  margin: 0;
+  color: #777;
+  font-size: 13px;
+}
+.content .like-input {
+  flex: none;
+  overflow: visible;
+  width: auto;
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+}
+/* guarantee under the pay buttons, at the moment of decision */
+/* payment method: two separate radio boxes with a gap, same width as the other boxes */
+.pay-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 0 12px;
+}
+.pay-opt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #e3e6ea;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-family: IRANSans-FaNum, sans-serif;
+}
+.pay-opt:has(input:checked) {
+  border-color: #00b74a;
+  background: #f3fbf6;
+}
+.pay-opts.xt-error .pay-opt {
+  border: 1px solid red !important;
+}
+.pay-opts.xt-error {
+  border: 0 !important;
+}
+.pay-opt input {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #00b74a;
+  cursor: pointer;
+}
+.pay-txt {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.pay-ico {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  line-height: 1;
+  color: #1f2329;
+  opacity: .3;
+}
+.pay-logo {
+  width: 30px;
+  height: 30px;
+  opacity: 1;
+  object-fit: contain;
+}
+.pay-txt b {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+}
+.pay-txt small {
+  font-size: 12px;
+  color: #777;
+}
+/* guarantee under the pay buttons, at the moment of decision */
+/* bank-transfer modal: full screen on phones, page width on desktop; inner parts use the site's own modal CSS */
+.pay-modal {
+  width: 100%;
+  max-width: 420px;
+  height: var(--vvh, 100dvh);
+  max-height: none;
+  margin: 0 auto;
+  top: var(--vvt, 0px);
+  bottom: auto;
+  overscroll-behavior: contain;
+  padding: 0;
+  border: 0;
+  background: #fff;
+  overflow: hidden;
+}
+.pay-modal, .pay-modal * {
+  font-family: IRANSans-FaNum, sans-serif;
+}
+/* the modal sits outside the page wrapper that carries the site font */
+html:has(.pay-modal[open]) {
+  overflow: hidden;
+}
+/* the page behind stays still while the keyboard is up */
+.pay-modal::backdrop {
+  background: rgba(16, 24, 48, .35);
+}
+.pay-modal .modal-dialog, .pay-modal .modal-content {
+  height: 100%;
+  min-height: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.pay-modal > div, .pay-modal .menu-fixed-design {
+  height: 100%;
+  min-height: 0 !important;
+}
+.pay-modal .menu-fixed-body {
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+/* lets the body scroll so the save button stays on screen */
+.pay-modal .box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.pay-modal .back-btn {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #e5383b;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.pay-modal .has-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.pay-modal a[x-apple-data-detectors] {
+  color: inherit !important;
+  text-decoration: none !important;
+  pointer-events: none;
+}
+/* Safari auto-links numbers; keep them plain text */
+.pay-modal .copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #828992;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+.pay-modal .copy-btn > i {
+  font-size: 16px;
+}
+/* account info: bank card face on top (flat bank colour, real logo on a white tile), plain details panel underneath, one block */
+.bank-card {
+  --bank: #1c4ea6;
+  container-type: inline-size;
+  margin: 2px 0 4px;
+  border: 1px solid #d5dae1;
+  border-radius: 14px;
+  background: #fff;
+  overflow: hidden;
+}
+.bank-card.bc-mellat {
+  --bank: #c8102e;
+}
+.bank-card .bc-face {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px 16px 16px;
+  color: #fff;
+  background: var(--bank);
+}
+.bank-card .bc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.bank-card .bc-bank {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.bank-card .bc-bank b {
+  font-weight: 600;
+}
+.bank-card .bc-logo {
+  display: block;
+  box-sizing: border-box;
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  border-radius: 8px;
+  background: #fff;
+  object-fit: contain;
+}
+/* white tile so the real logo colours show on the bank colour */
+.pay-modal .bank-card .bc-num {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  direction: ltr;
+  padding: 9px 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .08);
+  white-space: nowrap;
+  font-size: min(18px, 6.4cqi);
+  font-weight: 500;
+  letter-spacing: .03em;
+  word-spacing: calc(.18em + 2px);
+  font-variant-numeric: tabular-nums;
+}
+/* scales down on narrow phones */
+.bank-card .bc-name {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+}
+.bank-card .bc-name b {
+  font-weight: 500;
+}
+.bank-card .bc-name small {
+  font-size: 12px;
+  opacity: .75;
+}
+.pay-modal .bank-card .bc-face .copy-btn {
+  justify-content: center;
+  width: 24px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, .16);
+  color: #fff;
+  letter-spacing: 0;
+  word-spacing: 0;
+  font-weight: 400;
+  transition: background .15s;
+}
+/* icon-only */
+.pay-modal .bank-card .bc-face .copy-btn > i {
+  font-size: 15px;
+}
+.pay-modal .bank-card .bc-face .copy-btn.done {
+  background: transparent;
+  transition: none;
+}
+.pay-modal .bank-card .bc-face .copy-btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 1px;
+}
+@media (hover: hover) {
+  .pay-modal .bank-card .bc-face .copy-btn:not(.done):hover {
+    background: rgba(255, 255, 255, .26);
+  }
+}
+.pay-modal .bank-tabs {
+  margin-bottom: 16px !important;
+}
+/* amount to transfer: one compact row above the account section; unit + toman hint so rial/toman can't be mixed up */
+.pay-amount {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border: 1px solid #cdeedb;
+  border-radius: 12px;
+  background: #f2fbf5;
+}
+/* compact row: label right, figure left */
+.pay-amount .pa-lbl {
+  font-size: 13px;
+  font-weight: 500;
+  color: #4a535c;
+  white-space: nowrap;
+}
+.pay-amount .pa-val {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  white-space: nowrap;
+  font-size: 12px;
+  color: #00873a;
+}
+.pay-amount .pa-val b {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: .02em;
+}
+.pay-amount .pa-val small {
+  font-size: 11px;
+  color: #8b929a;
+}
+.pay-modal .bank-tabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.pay-modal .bank-tabs .tab-logo {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+}
+/* site .purchase-tab sets 10px */
+.bank-card .bc-info {
+  padding: 0 16px;
+}
+.bank-card .bc-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2px 8px;
+  min-height: 38px;
+  padding: 2px 0;
+}
+.bank-card .bc-row + .bc-row {
+  border-top: 1px solid #eff1f3;
+}
+.bank-card .bc-row small {
+  font-size: 12px;
+  color: #828992;
+}
+.pay-modal .bank-card .bc-row .has-copy {
+  margin-right: auto;
+  direction: ltr;
+  white-space: nowrap;
+  font-size: min(13px, 5cqi);
+  color: #333;
+}
+/* eases down on 320px phones so the copied badge keeps clear of the edge */
+.pay-modal .copy-btn.done {
+  color: #00b74a;
+}
+.pay-modal .copy-btn {
+  position: relative;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+/* icon right of every number */
+.pay-modal .copy-t {
+  position: absolute;
+  top: 50%;
+  left: calc(-1 * var(--s, 0px));
+  transform: translateY(-50%);
+  clip-path: inset(0 calc(100% - 24px - var(--s, 0px)) 0 var(--s, 0px) round 999px);
+  opacity: 0;
+  transition: opacity .15s ease, clip-path .3s cubic-bezier(.2, .8, .2, 1);
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #e6f7ec;
+  color: #00873a;
+  border: 1px solid rgba(0, 135, 58, .3);
+  font-size: 11px;
+  line-height: 18px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+/* one style everywhere: opens from the icon and grows rightward; --s pulls it left only when the card edge is too close */
+@media (prefers-reduced-motion: reduce) {
+  .pay-modal .copy-t {
+    transition: none;
+  }
+}
+.pay-modal .copy-btn.done .copy-t {
+  opacity: 1;
+  clip-path: inset(0 0 0 0 round 999px);
+}
+.pay-modal .copy-t i {
+  font-size: 12px;
+}
+.pay-modal .copy-btn.done > i {
+  visibility: hidden;
+}
+.pay-modal .fish {
+  cursor: pointer;
+}
+.pay-modal [hidden] {
+  display: none !important;
+}
+/* site CSS sets display on inputs and .input-holder */
+.pay-modal .past-sel {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+.pay-modal .past-sel select {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+}
+/* Saved transfer details stay separate from the radio label. */
+.pay-option-bank {
+  min-width: 0;
+}
+.pay-option-bank:has(input:checked) {
+  border: 1px solid #00b74a;
+  border-radius: 10px;
+  background: #f3fbf6;
+}
+.pay-option-bank:has(input:checked) > .pay-opt {
+  border-color: transparent;
+  background: none;
+}
+.pay-opts.xt-error .pay-option-bank:has(input:checked) {
+  border-color: red;
+}
+.pay-opts .pay-sum {
+  display: none;
+  position: relative;
+  margin: 8px 12px 12px;
+  padding: 12px 14px 14px;
+  border: 1px solid #d5d9dd;
+  border-radius: 8px;
+  background: #fff;
+  font-family: IRANSans-FaNum, sans-serif;
+  font-size: 12px;
+  min-width: 0;
+}
+.pay-option-bank:has(input:checked) .pay-sum.filled {
+  display: block;
+}
+.pay-sum-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #edf0ee;
+}
+.pay-sum-hd b {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #333;
+}
+.pay-sum .pay-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  border: 1px solid #ffa900;
+  border-radius: 6px;
+  background: #fff;
+  color: #ffa900;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.pay-edit svg {
+  width: 15px;
+  height: 15px;
+}
+.pay-sum .pay-edit:hover {
+  background: #fff8e6;
+}
+.pay-sum-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 16px;
+  align-items: baseline;
+  padding-top: 10px;
+  line-height: 1.8;
+}
+.pay-sum-row span {
+  color: #828992;
+}
+.pay-sum-row b {
+  min-width: 0;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 400;
+  color: #333;
+  overflow-wrap: anywhere;
+}
+.pay-sum-row .s-code, .pay-sum-row .s-date {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+.pay-edit:focus-visible {
+  outline: 2px solid #ffa900;
+  outline-offset: 3px;
+}
+.pay-opts:not(:has(input[value=online]:checked)) + .online-msg {
+  display: none;
+}
+/* box spacing +10% */
+.wp-pay-orders .vital-msg.cheque-btn {
+  margin: 30px 0;
+}
+.wp-pay-orders > div > .vital-msg.green-msg {
+  margin-bottom: 25px !important;
+}
+.wp-pay-orders > div > .info-keeper {
+  margin-top: 21px !important;
+  margin-bottom: 25px !important;
+}
+.wp-pay-orders > div > .sep-section {
+  margin-top: 22px;
+}
+.wp-pay-orders .mini-foot {
+  margin-top: 28px;
+}
+.wp-pay-orders .sep-section:has(.pay-opts) {
+  margin-bottom: 0;
+}
+
+.pay-modal .scroll-hint {
+  position: absolute;
+  inset: auto 0 71px;
+  height: 84px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 12px;
+  background: linear-gradient(to top, rgba(16, 24, 40, .14), rgba(16, 24, 40, 0));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+}
+.pay-modal .scroll-hint.on {
+  opacity: 1;
+}
+.pay-modal .scroll-hint i {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff;
+  color: #1f2329;
+  font-size: 18px;
+  animation: hintBob .9s ease-in-out infinite;
+}
+@keyframes hintBob {
+  50% {
+    transform: translateY(5px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pay-modal .scroll-hint i {
+    animation: none;
+  }
+}

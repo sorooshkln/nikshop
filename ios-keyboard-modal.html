@@ -1,0 +1,158 @@
+<!doctype html>
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>کیبورد iOS و دکمه مودال</title>
+<style>
+  @font-face { font-family: IRANSans-FaNum; src: url(fonts/IRANSANSWEBFANUM.ttf); font-weight: 400; }
+  @font-face { font-family: IRANSans-FaNum; src: url(fonts/IRANSANSWEBFANUM_MEDIUM.ttf); font-weight: 500 900; }
+  :root { --bg: #f6f7f9; --card: #fff; --line: #e3e6ea; --text: #2b2f33; --muted: #6b737c; --green: #00a443; --green-bg: #eaf8ef; --red: #d93a3a; --red-bg: #fdeeee; --code: #1f2328; --code-bg: #f3f4f6; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #15171a; --card: #1d2024; --line: #2f343a; --text: #e6e8eb; --muted: #9aa2ab; --green: #39c977; --green-bg: #17301f; --red: #f07070; --red-bg: #3a1d1d; --code: #e6e8eb; --code-bg: #24282d; } }
+  :root[data-theme="dark"] { --bg: #15171a; --card: #1d2024; --line: #2f343a; --text: #e6e8eb; --muted: #9aa2ab; --green: #39c977; --green-bg: #17301f; --red: #f07070; --red-bg: #3a1d1d; --code: #e6e8eb; --code-bg: #24282d; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.9 IRANSans-FaNum, Tahoma, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { margin: 0 0 6px; font-size: 22px; }
+  h2 { margin: 36px 0 10px; font-size: 17px; }
+  p { margin: 0 0 12px; }
+  .lead { color: var(--muted); }
+  .card { padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
+  ol, ul { margin: 0 0 12px; padding-right: 20px; }
+  li { margin-bottom: 6px; }
+  code { padding: 1px 6px; border-radius: 5px; background: var(--code-bg); font: 12.5px/1.6 ui-monospace, Consolas, monospace; direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
+  pre { margin: 10px 0 14px; padding: 14px 16px; overflow-x: auto; border-radius: 10px; background: var(--code-bg); color: var(--code); font: 12.5px/1.7 ui-monospace, Consolas, monospace; direction: ltr; text-align: left; }
+  .tag { display: inline-block; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 500; }
+  .tag.bad { background: var(--red-bg); color: var(--red); }
+  .tag.good { background: var(--green-bg); color: var(--green); }
+  /* two phone sketches: today vs. after the fix */
+  .phones { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin: 16px 0 4px; }
+  .phone figcaption { margin-top: 8px; text-align: center; font-size: 13px; }
+  .screen { position: relative; height: 380px; overflow: hidden; border: 6px solid #2b2f33; border-radius: 30px; background: #fff; color: #333; font-size: 11px; line-height: 1.6; }
+  .modal { position: absolute; inset: 0 0 auto; display: flex; flex-direction: column; }
+  .m-head { padding: 10px 12px; border-bottom: 1px solid #eee; background: #f5f5f5; font-weight: 500; }
+  .m-body { flex: 1; padding: 10px 12px; }
+  .field { height: 22px; margin: 4px 0 10px; border: 1px solid #ddd; border-radius: 6px; }
+  .field.focus { border-color: #2f80ed; box-shadow: 0 0 0 2px rgba(47, 128, 237, .2); }
+  .m-btn { margin: 8px 10px; padding: 7px; border-radius: 6px; background: #00b74a; color: #fff; text-align: center; font-weight: 500; }
+  .kb { position: absolute; inset: auto 0 0; height: 150px; display: grid; place-items: center; background: rgba(207, 211, 217, .9); color: #555; font-size: 12px; }
+  .s-bad .modal { top: -90px; height: 470px; } /* Safari scrolled the page: the whole modal rose, button sits under the keyboard */
+  .s-bad .m-btn { outline: 2px dashed var(--red); outline-offset: 2px; }
+  .s-good .modal { height: 218px; } /* modal = visible area above the keyboard */
+  .s-good .m-body { overflow: hidden; }
+  .arrow { position: absolute; left: 8px; color: var(--red); font-size: 11px; font-weight: 500; }
+  @media (prefers-reduced-motion: no-preference) { .s-good .m-btn { animation: pulse 2s ease-in-out infinite; } @keyframes pulse { 50% { box-shadow: 0 0 0 4px rgba(0, 183, 74, .25); } } }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: right; vertical-align: top; }
+  th { color: var(--muted); font-weight: 500; }
+</style>
+</head>
+<body>
+<main>
+  <h1>کیبورد iOS و دکمه «ثبت اطلاعات واریز»</h1>
+  <p class="lead">چرا با باز شدن کیبورد در آیفون دکمه‌ی پایین مودال جابه‌جا می‌شود و صفحه زیادی اسکرول می‌خورد، و چطور درستش کنیم.</p>
+
+  <h2>۱. مشکل چیست؟</h2>
+  <div class="card">
+    <p>مودال «اطلاعات حساب» تمام‌صفحه است (<code>height: 100dvh</code>): سربرگ بالا، بدنه‌ی اسکرول‌خور وسط و دکمه‌ی «ثبت اطلاعات واریز» پایین. روی اندروید و دسکتاپ درست کار می‌کند، اما در آیفون وقتی کاربر روی «کد پیگیری» می‌زند و کیبورد باز می‌شود:</p>
+    <ul>
+      <li>کل مودال به بالا هل داده می‌شود و دکمه زیر کیبورد می‌رود؛</li>
+      <li>صفحه بیش از حد اسکرول می‌خورد و بالا و پایین می‌پرد؛</li>
+      <li>کاربر برای زدن دکمه باید کیبورد را ببندد.</li>
+    </ul>
+    <div class="phones">
+      <figure class="phone" style="margin:0">
+        <div class="screen s-bad">
+          <div class="modal">
+            <div class="m-head">اطلاعات حساب</div>
+            <div class="m-body">تصویر فیش<div class="field"></div>تاریخ پرداخت<div class="field"></div>کد پیگیری<div class="field focus"></div></div>
+            <div class="m-btn">ثبت اطلاعات واریز</div>
+          </div>
+          <span class="arrow" style="bottom:156px">دکمه پشت کیبورد ↓</span>
+          <div class="kb">کیبورد</div>
+        </div>
+        <figcaption><span class="tag bad">الان</span> مودال بالا رفته، دکمه دیده نمی‌شود</figcaption>
+      </figure>
+      <figure class="phone" style="margin:0">
+        <div class="screen s-good">
+          <div class="modal">
+            <div class="m-head">اطلاعات حساب</div>
+            <div class="m-body">کد پیگیری<div class="field focus"></div></div>
+            <div class="m-btn">ثبت اطلاعات واریز</div>
+          </div>
+          <div class="kb">کیبورد</div>
+        </div>
+        <figcaption><span class="tag good">بعد از اصلاح</span> دکمه درست بالای کیبورد می‌چسبد</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <h2>۲. چرا این اتفاق می‌افتد؟</h2>
+  <div class="card">
+    <ol>
+      <li><b>Safari با باز شدن کیبورد ارتفاع صفحه را کم نمی‌کند.</b> اندروید صفحه را کوتاه می‌کند، ولی در iOS هم <code>100vh</code> و هم <code>100dvh</code> همان ارتفاع کامل می‌مانند و کیبورد فقط روی صفحه می‌نشیند. پس دکمه‌ی پایین مودال دقیقاً پشت کیبورد قرار می‌گیرد.</li>
+      <li><b>Safari برای نشان دادن فیلد، کل صفحه را اسکرول می‌کند.</b> فیلد فوکوس‌شده باید دیده شود، پس Safari کل صفحه را بالا می‌برد؛ مودال (که <code>fixed</code> است) هم با آن بالا می‌رود. این اسکرول اضافه همان «اسکرول زیاد» است.</li>
+      <li><b>فقط یک چیز اندازه‌ی واقعی را می‌داند:</b> <code>window.visualViewport</code> ارتفاع ناحیه‌ی قابل‌دیدن بالای کیبورد (<code>height</code>) و میزان اسکرول Safari (<code>offsetTop</code>) را می‌دهد. CSS به‌تنهایی در iOS به این عددها دسترسی ندارد.</li>
+    </ol>
+  </div>
+
+  <h2>۳. راهکار پیشنهادی: مودال را هم‌اندازه‌ی ناحیه‌ی دیدنی کنیم</h2>
+  <div class="card">
+    <p>به‌جای ثابت گذاشتن ارتفاع مودال روی <code>100dvh</code>، ارتفاع و جای آن را با <code>visualViewport</code> هماهنگ می‌کنیم. چیدمان فعلی (سربرگ، بدنه‌ی اسکرول‌خور، دکمه) دست نمی‌خورد: وقتی مودال کوتاه شود، دکمه خودبه‌خود درست بالای کیبورد می‌نشیند و فقط بدنه اسکرول می‌خورد.</p>
+    <p><b>CSS</b> (جایگزین ارتفاع فعلی <code>.pay-modal</code>):</p>
+<pre>.pay-modal { height: var(--vvh, 100dvh); transform: translateY(var(--vvt, 0px)); }
+html:has(.pay-modal[open]) { overflow: hidden; } /* the page behind stays still */</pre>
+    <p><b>JS</b> (کنار بقیه‌ی کدهای مودال):</p>
+<pre>// iOS: keyboard doesn't shrink 100dvh — size the modal to the visible area instead
+const vv = window.visualViewport;
+const fit = () => {
+  pm.style.setProperty("--vvh", vv.height + "px");    // visible height above the keyboard
+  pm.style.setProperty("--vvt", vv.offsetTop + "px"); // undo Safari's page scroll
+};
+if (vv) { vv.addEventListener("resize", fit); vv.addEventListener("scroll", fit); }
+pm.addEventListener("focusin", e => e.target.matches("input") &amp;&amp;
+  setTimeout(() => e.target.scrollIntoView({ block: "center" }), 300)); // after the keyboard settles</pre>
+    <p>نتیجه:</p>
+    <ul>
+      <li>دکمه‌ی «ثبت اطلاعات واریز» همیشه دیده می‌شود و بالای کیبورد می‌ماند؛</li>
+      <li>پرش و اسکرول اضافه‌ی صفحه‌ی پشت مودال حذف می‌شود؛</li>
+      <li>با بسته شدن کیبورد، مودال خودش به تمام‌صفحه برمی‌گردد؛</li>
+      <li>روی اندروید و دسکتاپ هم بی‌خطر است (همان مقادیر فعلی را می‌دهد).</li>
+    </ul>
+  </div>
+
+  <h2>۴. دو بهبود کوچک کنارش</h2>
+  <div class="card">
+    <ol>
+      <li><b>دکمه‌ی Enter کیبورد کار ثبت را انجام دهد.</b> روی فیلد کد پیگیری <code>enterkeyhint="done"</code> بگذاریم و با Enter همان دکمه‌ی ثبت زده شود. کاربر حتی لازم ندارد دنبال دکمه بگردد.
+<pre>&lt;input class="… track" inputmode="numeric" enterkeyhint="done"&gt;
+code.onkeydown = e =&gt; e.key === "Enter" &amp;&amp; pm.querySelector(".pay-save").click();</pre></li>
+      <li><b>اندروید:</b> به متای viewport عبارت <code>interactive-widget=resizes-content</code> اضافه شود تا در Chrome اندروید هم <code>dvh</code> با کیبورد کوچک شود (iOS این را نادیده می‌گیرد و راهکار بخش ۳ کار را انجام می‌دهد).</li>
+    </ol>
+  </div>
+
+  <h2>۵. مقایسه با راه‌های دیگر</h2>
+  <div class="card" style="padding:6px 8px">
+    <table>
+      <tr><th>روش</th><th>نتیجه</th></tr>
+      <tr><td><code>position: fixed; bottom: 0</code> برای دکمه</td><td>در iOS دکمه زیر کیبورد می‌ماند یا هنگام اسکرول می‌لرزد. <span class="tag bad">کار نمی‌کند</span></td></tr>
+      <tr><td><code>100dvh</code> / <code>100svh</code></td><td>در iOS با کیبورد تغییر نمی‌کند. <span class="tag bad">کار نمی‌کند</span></td></tr>
+      <tr><td>مخفی کردن دکمه‌ی چسبان هنگام تایپ و گذاشتن آن زیر آخرین فیلد</td><td>ساده و مطمئن، ولی دکمه هنگام تایپ دیگر «همیشه در دسترس» نیست. <span class="tag good">گزینه‌ی جایگزین</span></td></tr>
+      <tr><td><b>هماهنگی با <code>visualViewport</code> (پیشنهاد)</b></td><td>دکمه چسبان می‌ماند، درست بالای کیبورد، بدون پرش. <span class="tag good">پیشنهاد</span></td></tr>
+    </table>
+  </div>
+
+  <h2>۶. تست روی آیفون واقعی</h2>
+  <div class="card">
+    <ul>
+      <li>مودال را باز کنید، روی «کد پیگیری» بزنید: دکمه باید بلافاصله بالای کیبورد دیده شود.</li>
+      <li>با کیبورد باز، بدنه‌ی مودال را اسکرول کنید: سربرگ و دکمه نباید تکان بخورند.</li>
+      <li>کیبورد را ببندید: مودال باید دوباره تمام‌صفحه شود و فاصله‌ی خالی پایینش نماند.</li>
+      <li>روی آیفون با Home Indicator (بدون دکمه‌ی خانه) و یک آیفون SE هم امتحان شود.</li>
+      <li>Enter کیبورد باید اطلاعات را ثبت کند.</li>
+    </ul>
+    <p class="lead" style="margin:0">این رفتار فقط روی Safari واقعی iOS دیده می‌شود؛ شبیه‌ساز مرورگر دسکتاپ کیبورد مجازی ندارد.</p>
+  </div>
+</main>
+</body>
+</html>
